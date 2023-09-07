@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Home page</h1>
+    <h2>Hello, {{ name|capitalize }}</h2>
+    <h2>You are {{ age }} years old</h2>
+    <h2>You are {{ profession }}</h2>
+
+    {% set pet='cat' %}
+     <h2>You have a {{ pet }}</h2>
+    
+     {% set user_list = ['tom', 'jerry', 'spike'] %}
+        <ul>
+            {% for user in user_list %}
+                     <li><h3>{{ user|capitalize }}</h3></li>
+            {% endfor %}
+        </ul>
+
+
+    
+
+</body>
+</html>
