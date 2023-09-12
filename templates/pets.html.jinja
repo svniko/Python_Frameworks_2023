@@ -1,0 +1,10 @@
+{% extends "layout.html.jinja" %}
+{% block content%}
+    <h1>Our pets</h1>
+    {% for pet in pets%}
+        <div>
+            <h2>{{pet.name}}</h2>
+            <p>It is a {{pet.kind}} and {{pet.age}} years old</p>
+        </div>
+    {% endfor%}
+{% endblock content%}

@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
-<body>
+{% extends "layout.html.jinja" %}
+{% block content%}
     <h1>Home page</h1>
     <h2>Hello, {{ name|capitalize }}</h2>
     <h2>You are {{ age }} years old</h2>
@@ -20,9 +14,5 @@
                      <li><h3>{{ user|capitalize }}</h3></li>
             {% endfor %}
         </ul>
+{% endblock content%}
 
-
-    
-
-</body>
-</html>

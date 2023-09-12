@@ -22,13 +22,36 @@ def user(name):
 #                             name=name, 
 #                             age=20)
 
+pets = [
+    {'kind':'cat',
+    'name':'Tom',
+    'age':10,
+    'color': 'grey'
+    },
+    {'kind':'cat',
+    'name':'Barsik',
+    'age':5,
+    'color': 'white'
+    },
+    {'kind':'dog',
+    'name':'Spike',
+    'age':2,
+    'color': 'brown'
+    },
+]
+
 @app.route("/users")
 def home():
     name, age, profession = 'Jerry', 24, 'Programmer'
     template_context = dict(name=name, age=age, profession=profession)
-    return render_template('home.html', 
+    return render_template('home.html.jinja', 
                            **template_context)
 
+@app.route('/pet')
+def pet():
+    return render_template('pets.html.jinja', 
+                            pets=pets,
+                            title='Our pets')
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
