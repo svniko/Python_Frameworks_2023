@@ -1,0 +1,31 @@
+{% extends "layout.html.jinja" %}
+{% block content%}
+    <h1>Lecture 2</h1>
+    <form action="http://www.google.com/search" method="GET">
+        <input name="q" type="text">
+        <input type="submit" value="Submit">
+    </form>
+<br>
+    {# <form action="/hello" method="post"> #}
+    
+    {% if flag==0 %}
+        <p class="alert alert-danger" role="alert">Enter a name, please</p>
+    {% endif %}
+
+    <form action="{{url_for('smb')}}" method="post">
+        <input name="name" type="text" 
+        autocomplete="off" autofocus
+        placeholder="Enter your name">
+        <button>Submit</button>
+    </form>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        if ({{flag}} == 0) {
+            document.querySelector('[name="name"]').style.backgroundColor='#ff7777'
+        } else {
+             document.querySelector('[name="name"]').style.backgroundColor='white'
+        }
+      });
+    </script>
+{% endblock content%}
