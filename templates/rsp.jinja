@@ -1,0 +1,22 @@
+{% extends "layout.html.jinja" %}
+{% block content %}
+<h1>Rock Scissors Paper</h1>
+ 
+ {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+    {{message}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+ {%endfor%}
+
+    {% if start %}
+        <a class="link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{{url_for('rsp')}}">Let's start?</a>
+    {% else %}
+        <ul>
+            <li><a href="{{url_for('select', ch=0)}}"><img src="{{url_for('static', filename='img/rock.png')}}" width="60" ></a></li>
+            <li><img src="{{url_for('static', filename='img/scissors.png')}}" width="60"></li>
+            <li><img src="{{url_for('static', filename='img/paper.png')}}" width="60"></li>
+        </ul>
+    {% endif %}
+
+{% endblock content %}
