@@ -1,9 +1,17 @@
-from flask import Flask, render_template, request, url_for, redirect, flash
+from flask import Flask, render_template, request, url_for, redirect, flash, session
 import random
-
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__, template_folder='templates')
-app.secret_key = '1231231secretkey or very'
+# app.secret_key = '1231231secretkey or very'
+app.config['SECRET_KEY'] = "f669374220c12ea4819ff8c971684ca1"
+
+class FirstForm(FlaskForm):
+    name = StringField("Enter you name", 
+                       validators = [DataRequired()])
+    submit = SubmitField("Submit")
 
 game = {
     'choise': None,
@@ -134,7 +142,21 @@ def rsp():
                            title="Game" )
 
 
-
+@app.route('/lect4/', methods=['GET', 'POST'])
+def lect4():
+    # name = None
+    
+    form = FirstForm()
+    if form.validate_on_submit():
+        # name = form.name.data
+        session['name'] = form.name.data
+        form.name.data = ''
+        return redirect(url_for('lect4'))
+    return render_template('lecture4.jinja',
+                            title = 'Lecture 4',
+                            name = session.get('name'),
+                            # name = name,
+                            form = form)
 
 # if __name__ == "__main__":
 #     app.run(debug=True)

@@ -7,4 +7,21 @@
             <p>It is a {{pet.kind}} and {{pet.age}} years old</p>
         </div>
     {% endfor%}
+
+    <table class="table table-hover">
+    {% set k = pets[0]%}
+    <tr>
+    {% for h in k.keys()%}
+    <th>{{h}}</th>
+    {%endfor%}
+    </tr>
+    {% for pet in pets%}
+    <tr>
+    <td>{{pet.kind}}</td>
+    <td>{{pet.name}}</td>
+    <td>{{pet.age}}</td>
+    <td>{{pet.color}}</td>
+    </tr>
+    {%endfor%}
+    </table>
 {% endblock content%}
