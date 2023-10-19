@@ -3,15 +3,57 @@ import random
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+# daterime.datetime.utcnow
 
 app = Flask(__name__, template_folder='templates')
 # app.secret_key = '1231231secretkey or very'
 app.config['SECRET_KEY'] = "f669374220c12ea4819ff8c971684ca1"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 	False
+
+db = SQLAlchemy(app)
 
 class FirstForm(FlaskForm):
     name = StringField("Enter you name", 
                        validators = [DataRequired()])
     submit = SubmitField("Submit")
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(200), nullable=False) 
+    email = db.Column(db.String(120), nullable=False, unique = True)
+    date_added = db.Column(db.DateTime, default = datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Name>: {self.name}"
+
+class UserForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
+    email=StringField("Email", validators=[DataRequired()])
+    submit=SubmitField('Submit')
+
+@app.route('/user/add/', methods=["GET","POST"])
+def add_user():
+    form=UserForm()
+    our_users = []
+    if form.validate_on_submit():
+        
+        user = Users.query.filter_by(email=form.email.data).first()
+        if user is None:
+            user = Users(name=form.name.data, email=form.email.data)
+            db.session.add(user)
+            db.session.commit()
+            flash(f"User {form.name.data} added successfully")
+        form.name.data = ''
+        form.email.data = ''
+        
+        our_users = Users.query.order_by(Users.date_added)
+    return render_template("lecture5.jinja",
+                            form=form,
+                            our_users=our_users)
 
 game = {
     'choise': None,

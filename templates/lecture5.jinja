@@ -1,0 +1,31 @@
+{% extends "layout.html.jinja" %}
+{% block content %}
+
+<h1>Lecture 5</h1>
+{%for message in get_flashed_messages()%}
+    <div class="alert alert-success" role="alert">
+        {{message}}
+    </div>
+{%endfor%}
+<h2>Enter a user:</h2>
+<form method="POST">
+    {{form.hidden_tag()}}
+    {{form.name.label(class="form-label")}}
+    {{form.name(class="form-control", autocomplete='off')}}
+    <br>
+    {{form.email.label(class="form-label")}}
+    {{form.email(class="form-control", autocomplete='off')}}
+    <br>
+    {{form.submit(class="btn btn-success")}}
+</form>
+<table class="table table-hover">
+    {% for user in our_users %}
+        <tr>
+            <td>{{user.id}}</td>
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+        </tr>    
+    {% endfor %}
+</table>
+
+{% endblock content %}
