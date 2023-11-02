@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 import random
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField,  BooleanField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import requests
 
 # daterime.datetime.utcnow
 
@@ -34,6 +35,75 @@ class UserForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     email=StringField("Email", validators=[DataRequired()])
     submit=SubmitField('Submit')
+
+
+class SecondForm(FlaskForm):
+    width = StringField("Enter a width", validators=[DataRequired()])
+    height = StringField('Enter a height', 
+				validators=[DataRequired()])
+    is_black = BooleanField("Grayscale?")
+    submit = SubmitField('Submit')
+
+@app.route('/exchange_to/')
+def exchange_to():
+    # from_ ='USD'
+    # to= 'UAH'
+    # q = '_'.join((from_,to))
+    q = request.args.get('q')
+    from_, to = q.split('_')
+    #double parentheses because the argument of join should be iterable (tuple in this case)
+    p = {'apiKey':'3936b045e5345a0340b1', 'q':q}
+    url = 'https://free.currconv.com/api/v7/convert'
+    response = requests.get(url,params=p)
+    if response and response.json()['results']:
+        resp = response.json()
+        convert = round(resp['results'][q]['val'],2)
+        return f'<h1>1 {from_} is {convert} {to} </h1>'
+    else:
+        return f"<h1>Can't find the information to convert {from_} to {to} </h1>"
+
+
+
+@app.route('/city/')
+def search_city():
+    API_KEY = 'c124fdaaa610d8f8091ce555740c7cd8'
+    # initialize your key here
+    city = request.args.get('q')  # city name passed as argument
+   
+    # call API and convert response into Python dictionary
+    url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}'
+    response = requests.get(url).json()
+
+    if response.get('cod') == 200: 
+        curr_temp = response['main']['temp']
+        curr_temp_cels = round(curr_temp-273.15,2)
+        return f'<h1> Current temperature in {city.title()} is {curr_temp_cels} &#8451;'
+	        
+    else:
+        return f'<h1>Error getting temperature for {city.title()}</h1>'
+
+
+
+@app.route('/lect6/', methods=['GET','POST'])
+def lect6():
+    w = h = None
+    url = 'https://placekitten.com'
+    form = SecondForm()
+    if form.validate_on_submit():
+        w = form.width.data
+        h = form.height.data
+        i = form.is_black.data
+        form.width.data = ''
+        form.height.data = ''
+        form.is_black.data = False
+  
+        if (requests.get(url).status_code == 200):
+            if i:
+                url = url+"/g/"+str(w)+'/'+str(h)
+            else:
+                url = url+"/"+str(w)+'/'+str(h)
+    return render_template('lecture6.html', form=form, url=url, w=w, h=h)
+
 
 @app.route('/user/add/', methods=["GET","POST"])
 def add_user():
@@ -202,3 +272,22 @@ def lect4():
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
+
+from flask import jsonify
+import json
+
+@app.route('/users_json', methods=['GET'])
+def get_users():
+    users = Users.query.all()
+    
+    # Convert to a list of dictionaries
+    user_list = [{'id': user.id, 
+                  'username': user.name, 
+                  'email': user.email} 
+                  for user in users]
+
+     
+    with open('data.json', 'w') as json_file:
+        json.dump(user_list, json_file)
+    
+    return jsonify(users=user_list)

@@ -1,0 +1,33 @@
+{% extends "layout.html.jinja"%}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Lecture API </h1>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                {{form.width.label(
+                    class="form-label")}}
+                {{form.width()}}
+            <br>
+                {{form.height.label(
+                    class="form-label")}}
+                {{form.height()}}
+                {{form.is_black.label(
+                    class="form-label")}}
+                {{form.is_black()}}
+                <br>
+                {{form.submit(
+                    class="btn btn-primary")}}
+            </form>
+        </div>
+        <div class="col-md-8">
+          
+            {% if w and h %}
+                <h1>Here is your cat</h1>
+                <div><img src='{{url}}'></div>
+            {%endif%}
+        </div>
+    </div>
+</div>
+{% endblock content %}
